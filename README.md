@@ -1,1 +1,0 @@
-# AI-Mock-Interview-Platform

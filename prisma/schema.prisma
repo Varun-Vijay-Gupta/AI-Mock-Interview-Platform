@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum InterviewMode {
+  TECHNICAL
+  HR
+  MIXED
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+}
+
+model User {
+  id               String         @id @default(cuid())
+  name             String?
+  email            String         @unique
+  passwordHash     String?
+  image            String?
+  role             String         @default("USER")
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  interviews       Interview[]
+  resumes          Resume[]
+  reports          Report[]
+  subscription     Subscription?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model Resume {
+  id               String   @id @default(cuid())
+  userId           String
+  filename         String
+  originalUrl      String
+  extractedText    String
+  parsedJson       Json
+  atsScore         Float?
+  suggestions      String[]
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model JobContext {
+  id               String   @id @default(cuid())
+  companyName      String
+  roleName         String
+  jobDescription   String
+  techRequirements String
+  experienceReq    String
+  interviews       Interview[]
+  createdAt        DateTime @default(now())
+}
+
+model Interview {
+  id                    String          @id @default(cuid())
+  userId                String
+  jobContextId          String?
+  mode                  InterviewMode
+  difficulty            DifficultyLevel
+  interviewerPersona    String
+  status                String          @default("CREATED")
+  totalQuestions        Int             @default(10)
+  askedQuestions        Json             @default("[]")
+  conversationHistory   Json?
+  sessionState          Json?
+  interviewPhase        String           @default("pending")
+  topicsCovered         String[]         @default([])
+  currentDifficulty     Float            @default(1.5)
+  followUpCount         Int              @default(0)
+  codingEnabled         Boolean          @default(false)
+  resumeContext         Json?
+  transcript            String?
+  answersJson           Json?
+  recordingUrl          String?
+  technicalScore        Float?
+  communicationScore    Float?
+  confidenceScore       Float?
+  behavioralScore       Float?
+  overallScore          Float?
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobContext            JobContext?     @relation(fields: [jobContextId], references: [id])
+  report                Report?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+}
+
+model Report {
+  id                    String   @id @default(cuid())
+  userId                String
+  interviewId           String   @unique
+  strengths             String[]
+  weaknesses            String[]
+  suggestions           String[]
+  idealAnswers          Json
+  answerAnalysis        Json?
+  grammarFeedback       String[]
+  conversationSummary   String?
+  resumeJobFitScore     Float?
+  resumeJobFitNotes     String?
+  shareToken            String?  @unique
+  technicalScore        Float
+  communicationScore    Float
+  confidenceScore       Float
+  hrScore               Float
+  behavioralScore       Float
+  overallScore          Float
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  interview             Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  createdAt             DateTime @default(now())
+}
+
+model Subscription {
+  id                  String           @id @default(cuid())
+  userId              String           @unique
+  plan                SubscriptionPlan @default(FREE)
+  stripeCustomerId    String?
+  stripeSubscriptionId String?
+  interviewsLimit     Int              @default(3)
+  user                User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
