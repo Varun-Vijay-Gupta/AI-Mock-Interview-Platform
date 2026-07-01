@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "next dev",
-    "dev:clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\" && next dev",
     "dev:api": "tsx watch server/src/index.ts",
     "build": "next build",
+    "build:server": "tsc -p tsconfig.server.json",
+    "build:all": "npm run build && npm run build:server",
     "start": "next start",
+    "start:server": "node server/dist/index.js",
     "lint": "eslint .",
     "prisma:generate": "prisma generate"
   },
@@ -60,6 +62,6 @@
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
     "tsx": "^4.22.3",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }
