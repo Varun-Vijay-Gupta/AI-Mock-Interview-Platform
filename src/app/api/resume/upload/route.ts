@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+
 import { prisma } from "@/lib/db";
 import { chatJson, isLocalAI, parseAiJson } from "@/lib/ai-provider";
 import { extractResumeText, parseAiResumeJson, parseResumeLocally } from "@/lib/resume-extract";
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
         filename: file.name,
         originalUrl: `local://${file.name}`,
         extractedText: text,
-        parsedJson: parsed as Prisma.InputJsonValue,
+        parsedJson: parsed as any,
         atsScore: Number(parsed.atsScore ?? 72),
         suggestions: Array.isArray(parsed.suggestions)
           ? parsed.suggestions.filter((s): s is string => typeof s === "string")

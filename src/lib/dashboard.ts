@@ -27,27 +27,27 @@ export async function getDashboardData(userId: string) {
     }),
   ]);
 
-  const completed = interviews.filter((i) => i.status === "COMPLETED");
+  const completed = interviews.filter((i : any) => i.status === "COMPLETED");
 
   const stats = [
     { label: "Total interviews", value: String(interviews.length), hint: `${completed.length} completed` },
-    { label: "Average score", value: formatPercentValue(average(completed.map((i) => i.overallScore))) },
-    { label: "Communication", value: formatPercentValue(average(completed.map((i) => i.communicationScore))) },
-    { label: "Technical accuracy", value: formatPercentValue(average(completed.map((i) => i.technicalScore))) },
-    { label: "Confidence", value: formatPercentValue(average(completed.map((i) => i.confidenceScore))) },
+    { label: "Average score", value: formatPercentValue(average(completed.map((i : any) => i.overallScore))) },
+    { label: "Communication", value: formatPercentValue(average(completed.map((i : any) => i.communicationScore))) },
+    { label: "Technical accuracy", value: formatPercentValue(average(completed.map((i : any) => i.technicalScore))) },
+    { label: "Confidence", value: formatPercentValue(average(completed.map((i : any) => i.confidenceScore))) },
   ];
 
   const trend: TrendPoint[] = completed
     .slice(0, 6)
     .reverse()
-    .map((item, index) => ({
+    .map((item : any, index : any) => ({
       label: `#${index + 1}`,
       technical: item.technicalScore ?? 0,
       communication: item.communicationScore ?? 0,
       confidence: item.confidenceScore ?? 0,
     }));
 
-  const recentInterviews: InterviewRow[] = interviews.slice(0, 6).map((item) => ({
+  const recentInterviews: InterviewRow[] = interviews.slice(0, 6).map((item : any) => ({
     id: item.id,
     mode: item.mode,
     difficulty: item.difficulty,
@@ -60,7 +60,7 @@ export async function getDashboardData(userId: string) {
 
   const suggestions = [
     ...(latestResume?.suggestions ?? []),
-    ...reports.flatMap((r) => r.suggestions).slice(0, 3),
+    ...reports.flatMap((r : any) => r.suggestions).slice(0, 3),
   ].slice(0, 5);
 
   return {

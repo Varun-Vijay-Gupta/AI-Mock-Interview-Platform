@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+
 import { prisma } from "@/lib/db";
 import { chatJson, isLocalAI, parseAiJson } from "@/lib/ai-provider";
 import type { ConversationTurn, InterviewContext, SessionState } from "./types";
@@ -71,8 +71,8 @@ export async function initializeInterviewSession(interviewId: string) {
       data: {
         status: "IN_PROGRESS",
         interviewPhase: session.phase,
-        sessionState: session as unknown as Prisma.InputJsonValue,
-        conversationHistory: history as unknown as Prisma.InputJsonValue,
+        sessionState: session as unknown as any,
+        conversationHistory: history as unknown as any,
         topicsCovered: session.topicsCovered,
         currentDifficulty: session.difficulty,
         totalQuestions: session.topicTarget,
@@ -116,12 +116,12 @@ export async function processInterviewTurn(interviewId: string, candidateAnswer:
     where: { id: interviewId },
     data: {
       interviewPhase: session.phase,
-      sessionState: session as unknown as Prisma.InputJsonValue,
-      conversationHistory: result.history as unknown as Prisma.InputJsonValue,
+      sessionState: session as unknown as any,
+      conversationHistory: result.history as unknown as any,
       topicsCovered: session.topicsCovered,
       currentDifficulty: session.difficulty,
       followUpCount: { increment: result.evaluation?.followUpNeeded ? 1 : 0 },
-      answersJson: result.history.filter((t) => t.role === "candidate") as unknown as Prisma.InputJsonValue,
+      answersJson: result.history.filter((t) => t.role === "candidate") as unknown as any,
     },
   });
 
@@ -179,8 +179,8 @@ export async function finalizeInterviewAndReport(interviewId: string, userId: st
     data: {
       status: "COMPLETED",
       interviewPhase: "done",
-      sessionState: session as unknown as Prisma.InputJsonValue,
-      conversationHistory: history as unknown as Prisma.InputJsonValue,
+      sessionState: session as unknown as any,
+      conversationHistory: history as unknown as any,
       transcript,
       technicalScore: reportData.technicalScore,
       communicationScore: reportData.communicationScore,
@@ -200,8 +200,8 @@ export async function finalizeInterviewAndReport(interviewId: string, userId: st
       conversationSummary: reportData.conversationSummary,
       resumeJobFitScore: reportData.resumeJobFitScore,
       resumeJobFitNotes: reportData.resumeJobFitNotes,
-      idealAnswers: reportData.idealAnswers as Prisma.InputJsonValue,
-      answerAnalysis: reportData.answerAnalysis as Prisma.InputJsonValue,
+      idealAnswers: reportData.idealAnswers as any,
+      answerAnalysis: reportData.answerAnalysis as any,
       technicalScore: reportData.technicalScore,
       communicationScore: reportData.communicationScore,
       confidenceScore: reportData.confidenceScore,
@@ -220,8 +220,8 @@ export async function finalizeInterviewAndReport(interviewId: string, userId: st
       conversationSummary: reportData.conversationSummary,
       resumeJobFitScore: reportData.resumeJobFitScore,
       resumeJobFitNotes: reportData.resumeJobFitNotes,
-      idealAnswers: reportData.idealAnswers as Prisma.InputJsonValue,
-      answerAnalysis: reportData.answerAnalysis as Prisma.InputJsonValue,
+      idealAnswers: reportData.idealAnswers as any,
+      answerAnalysis: reportData.answerAnalysis as any,
       technicalScore: reportData.technicalScore,
       communicationScore: reportData.communicationScore,
       confidenceScore: reportData.confidenceScore,

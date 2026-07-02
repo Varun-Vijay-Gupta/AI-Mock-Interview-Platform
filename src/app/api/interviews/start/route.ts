@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+
 import { prisma } from "@/lib/db";
 import { getAuthUserId } from "@/lib/session";
 import { canStartInterview } from "@/lib/subscription";
@@ -48,8 +48,8 @@ export async function POST(request: Request) {
         codingEnabled: input.codingEnabled ?? false,
         status: "CREATED",
         interviewPhase: "pending",
-        sessionState: sessionState as unknown as Prisma.InputJsonValue,
-        resumeContext: (latestResume?.parsedJson ?? {}) as Prisma.InputJsonValue,
+        sessionState,
+        resumeContext: latestResume?.parsedJson ?? {},
         askedQuestions: [],
         totalQuestions: sessionState.topicTarget,
       },
